@@ -10,5 +10,5 @@
 
 void bar()
 {
-    printf("%s %p", __FUNCTION__, &bar);
+    printf("%s %p\n", __FUNCTION__, &bar);
 }

@@ -15,15 +15,15 @@ namespace yatl {
 class DynLib
 {
 public:
-    DynLib(const std::string &name);
+    DynLib(const std::string &filename);
     ~DynLib();
     bool load();
     void unload();
     void *getSymbol(const char *sym) const throw();
-    const std::string &name() const;
+    const std::string &filename() const;
 
 private:
-    std::string name_;
+    std::string filename_;
     void *handle_;
 }; // class DynLib
 

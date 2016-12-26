@@ -12,23 +12,24 @@
 
 #if defined(__linux__)
 #include <dlfcn.h>
-#error no impliment yet
+#define DYNLIB_LOAD(a) dlopen(a, RTLD_LAZY|RTLD_GLOBAL)
+#define DYNLIB_GETSYM(a, b) dlsym(a, b)
+#define DYNLIB_UNLOAD(a) dlclose(a)
 #elif defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #define DYNLIB_LOAD(a) (void *)LoadLibraryEx(a, NULL, LOAD_WITH_ALTERED_SEARCH_PATH)
 #define DYNLIB_GETSYM(a, b) (void *)GetProcAddress((HMODULE)(a), b)
 #define DYNLIB_UNLOAD(a) !FreeLibrary((HMODULE)(a))
-#define LIB_EXT ".dll"
 #endif
 
 
 namespace yatl {
 
 DynLib::DynLib(const std::string &name) :
-    name_(name),
+    filename_(name),
     handle_(NULL)
 {
-    assert(name_.empty() == false);
+    assert(!filename_.empty());
 }
 
 DynLib::~DynLib()
@@ -39,19 +40,19 @@ DynLib::~DynLib()
 bool DynLib::load()
 {
     assert(handle_ == NULL);
-    printf("Loading library %s\n", name_.c_str());
-    std::string file = name_;
-    if (file.find(LIB_EXT) == std::string::npos) {
-        file.append(LIB_EXT);
+    printf("Loading library %s\n", filename_.c_str());
+    handle_ = DYNLIB_LOAD(filename_.c_str());
+    if (!handle_) {
+        const char *err = dlerror();
+        int a = 0;
     }
-    handle_ = DYNLIB_LOAD(file.c_str());
     return NULL != handle_;
 }
 
 void DynLib::unload()
 {
     if (handle_) {
-        printf("Unloading library %s\n", name_.c_str());
+        printf("Unloading library %s\n", filename_.c_str());
         DYNLIB_UNLOAD(handle_);
         handle_ = NULL;
     }
@@ -64,9 +65,9 @@ void *DynLib::getSymbol(const char *sym) const throw()
     return DYNLIB_GETSYM(handle_, sym);
 }
 
-const std::string &DynLib::name() const
+const std::string &DynLib::filename() const
 {
-    return name_;
+    return filename_;
 }
 
 } // namespace yatl

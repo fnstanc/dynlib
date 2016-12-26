@@ -6,10 +6,11 @@
  */
 
 #include "dynlib.h"
+#include <cassert>
 
 int main(int argc, char *argv[])
 {
-    yatl::DynLib lib("libfoo");
+    yatl::DynLib lib("./libfoo.so");
     bool res = lib.load();
     assert(res == true);
     typedef void *func(void);
