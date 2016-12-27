@@ -9,6 +9,7 @@
 #define _DYNLIB_H
 
 #include <string>
+#include <map>
 
 namespace yatl {
 
@@ -30,6 +31,24 @@ private:
     std::string filename_;
     void *handle_;
 }; // class DynLib
+
+class DynLibManager
+{
+public:
+    DynLibManager() {}
+    ~DynLibManager();
+    DynLib *load(const std::string &filename);
+    void unload(const std::string &filename);
+    void unloadAll();
+
+private:
+    DynLibManager(const DynLibManager &);
+    DynLibManager &operator=(const DynLibManager &);
+
+private:
+    typedef std::map<std::string, DynLib *> DynLibs;
+    DynLibs dynlibs_;
+}; // class DynLibManager
 
 } // namespace yatl
 

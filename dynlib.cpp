@@ -66,4 +66,43 @@ const std::string &DynLib::filename() const
     return filename_;
 }
 
+
+DynLibManager::~DynLibManager()
+{
+    unloadAll();
+}
+
+DynLib * DynLibManager::load(const std::string &filename)
+{
+    auto iter = dynlibs_.find(filename);
+    if (dynlibs_.end() != iter)
+        return iter->second;
+    DynLib *lib = new DynLib(filename);
+    if (!lib->load()) {
+        delete lib;
+        return NULL;
+    }
+    dynlibs_.insert(DynLibs::value_type(filename, lib));
+    return lib;
+}
+
+void DynLibManager::unload(const std::string &filename)
+{
+    auto iter = dynlibs_.find(filename);
+    if (dynlibs_.end() != iter) {
+        iter->second->unload();
+        delete iter->second;
+        dynlibs_.erase(iter);
+    }
+}
+
+void DynLibManager::unloadAll()
+{
+    for (auto &iter : dynlibs_) {
+        iter.second->unload();
+        delete iter.second;
+    }
+    dynlibs_.clear();
+}
+
 } // namespace yatl
