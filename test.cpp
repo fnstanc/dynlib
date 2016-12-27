@@ -10,7 +10,11 @@
 
 int main(int argc, char *argv[])
 {
+#if defined(_WIN32) || defined(_WIN64)
+    yatl::DynLib lib("./foo.dll");
+#else
     yatl::DynLib lib("./libfoo.so");
+#endif
     bool res = lib.load();
     assert(res == true);
     typedef void *func(void);

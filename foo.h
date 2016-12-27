@@ -8,7 +8,7 @@
 #ifndef _FOO_H
 #define _FOO_H
 
-#if defined(_win32) || defined(_win64)
+#if defined(_WIN32) || defined(_WIN64)
 #define YATL_API extern "C" __declspec(dllexport)
 #else
 #define YATL_API extern "C"

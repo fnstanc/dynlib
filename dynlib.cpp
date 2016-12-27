@@ -19,7 +19,7 @@
 #include <windows.h>
 #define DYNLIB_LOAD(a) (void *)LoadLibraryEx(a, NULL, LOAD_WITH_ALTERED_SEARCH_PATH)
 #define DYNLIB_GETSYM(a, b) (void *)GetProcAddress((HMODULE)(a), b)
-#define DYNLIB_UNLOAD(a) !FreeLibrary((HMODULE)(a))
+#define DYNLIB_UNLOAD(a) FreeLibrary((HMODULE)(a))
 #endif
 
 
@@ -42,10 +42,6 @@ bool DynLib::load()
     assert(handle_ == NULL);
     printf("Loading library %s\n", filename_.c_str());
     handle_ = DYNLIB_LOAD(filename_.c_str());
-    if (!handle_) {
-        const char *err = dlerror();
-        int a = 0;
-    }
     return NULL != handle_;
 }
 
