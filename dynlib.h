@@ -23,6 +23,10 @@ public:
     const std::string &filename() const;
 
 private:
+    DynLib(const DynLib &);
+    DynLib &operator=(const DynLib &);
+
+private:
     std::string filename_;
     void *handle_;
 }; // class DynLib
